@@ -66,6 +66,8 @@ README 及一切文档统一按下表书写（左列为唯一标准写法）：
 - 扩展贡献的键位追加在内置键位之后（优先级更高），会覆盖 VS Code 内置同键位功能（如 Ctrl+Tab 的“最近使用的编辑器”切换），README 中需提示该冲突。
 - VS Code 扩展的官方 i18n 是**两套并存**：静态贡献点走 `package.nls.json` + `%key%`（`displayName`/`description`/命令标题与分类/设置标题与说明都支持），运行时字符串走 `l10n/` 目录 + `vscode.l10n.t()`（前提是在 `package.json` 声明 `"l10n": "./l10n"`）。二者互不通用：`package.nls.json` 管不到运行时字符串，`l10n` bundle 也管不到命令标题与设置说明。
 - `vscode.l10n.t(message)` 的查找规则是「用 message 当键在 bundle 里查，查不到就原样返回 message」，因此把**英文原文直接当键**即可天然实现「缺翻译回退英文」。
+- VS Code 市场侧「一个扩展只能传一个 VSIX 文件」是误解：Marketplace 以扩展 ID（`publisher.name`）为条目，**同一 ID 下可并存多个平台专属包**（平台信息写在 VSIX 内 manifest 的 `TargetPlatform`，不是靠文件名），客户端按当前平台自动挑选。`vsce publish --target win32-x64 darwin-arm64 ...`（vsce ≥ 1.99）可一条命令发多平台；不带 `--target` 的通用包是所有无专属包平台（如 `win32-ia32`、`alpine-x64`、`web`）的 fallback。**只有扩展真的带原生模块或平台二进制时才需要平台专属包**；纯 JS 扩展发一个通用包即可。
+- CI 只打包不发市场：`.github/workflows/release.yml` 目前仅编译测试 + 打包 + 上传 GitHub Release 附件，未执行 `vsce publish`（发市场需要 Azure DevOps PAT，存 GitHub Secret）。
 
 ## 本机/工具坑
 
@@ -79,6 +81,6 @@ README 及一切文档统一按下表书写（左列为唯一标准写法）：
 - src/extension.ts：激活、状态栏按钮、命令；src/launchPlan.ts：纯函数 buildLaunchLines / resolveTerminalName（已覆盖单元测试）。
 - tsconfig rootDir "." → 输出 out/src、out/test；package.json main 指向 out/src/extension.js。
 
-  - 打包命令：`node scripts/package.mjs [current|all|<target>]`，用 `process.execPath` + vsce 垫片执行，避免 npx/shell 弃用警告。
+  - 打包命令：`npm run package`（= `node scripts/package.mjs`）产出通用 VSIX 文件，一个包覆盖全部平台。本扩展无运行时依赖、无原生模块，**不要**用 `--target` 打平台专属包（内容完全相同，纯属冗余）。脚本用 `process.execPath` + vsce 垫片执行，避免 npx/shell 弃用警告。
 - **Webview 实现要点**（已随方案删除）：CSP 用 nonce、不放开 unsafe-inline（xterm 主题色别用 CSS var）；`retainContextWhenHidden: true`；宿主侧在 webview `ready` 前暂存输出等。
 - **PowerShell 包装器坑（再次强调）**：node -e 内联代码里的 `{for(`、`})` 等组合会被包装器误解析，甚至把命令片段当成文件名创建垃圾文件。复杂 JS 一律写成脚本文件再执行。

@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   package:
-    name: Package (all platforms)
+    name: Package
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,12 +38,12 @@ jobs:
 
       - run: npm test
 
-      - name: 打包全平台 vsix
-        run: npm run package:all
+      - name: 打包 VSIX
+        run: npm run package
 
       - uses: actions/upload-artifact@v4
         with:
-          name: vsix-all
+          name: vsix
           path: release/*.vsix
 
       - name: 发布 GitHub Release

@@ -164,7 +164,7 @@ Directory structure: the core content is just the following.
 ├── package.nls.json       # English (default) text for package.json contributions
 ├── package.nls.zh-cn.json # Simplified Chinese text for package.json contributions
 ├── scripts/
-│   └── package.mjs        # vsce packaging (current / all / specified target)
+│   └── package.mjs        # vsce packaging (universal VSIX)
 ├── out/                   # tsc compile output (build artifact)
 └── release/               # Packaged VSIX output (build artifact)
 ```

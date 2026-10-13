@@ -164,7 +164,7 @@ flowchart LR
 ├── package.nls.json       # package.json 贡献点的英文（默认）文案
 ├── package.nls.zh-cn.json # package.json 贡献点的简体中文文案
 ├── scripts/
-│   └── package.mjs        # vsce 打包（current / all / 指定 target）
+│   └── package.mjs        # vsce 打包（通用 VSIX）
 ├── out/                   # tsc 编译输出（构建生成）
 └── release/               # 打包产物 VSIX（构建生成）
 ```
