@@ -1,5 +1,7 @@
 # 项目经验笔记（AI 专用）
 
+每次添加功能或者修改功能后，一定记得更改项目版本号。
+
 ## 关键结论（已验证官方文档/源码）
 
 - VS Code 官方扩展 API **不支持**在窗口标题栏添加按钮；GitHub Copilot 标题栏按钮是 VS Code 核心硬编码，扩展无法复用（issue #90268 / #233861，out of scope）。
@@ -24,17 +26,6 @@
 - src/extension.ts：激活、状态栏按钮、命令；src/launchPlan.ts：纯函数 buildLaunchLines（已覆盖单元测试）。
 - tsconfig rootDir "." → 输出 out/src、out/test；package.json main 指向 out/src/extension.js。
 
-## 侧栏终端 / node-pty / vsce（2026-10 新增，已验证）
-
-- **原生终端不能放第二侧栏**：`createTerminal` 的 `TerminalLocation` 只有 `Panel`/`Editor`（2026 年 API 参考仍如此，AuxiliaryBar 零命中）；侧栏终端必须用 Webview + node-pty 方案。
-- **`viewsContainers.secondarySidebar` 自 VS Code 1.106（2025-11）起支持**，可直接把 WebviewView 视图贡献到第二侧栏（贡献点名称是 `secondarySidebar`，不是 `secondarybar`/`auxiliarybar`）；icon 支持 `"$(rocket)"` codicon 写法；视图需 `"type": "webview"`。
-- **node-pty@1.1.0**：npm 包自带 `prebuilds/<platform>-<arch>/`（只有 win32-x64 / win32-arm64 / darwin-x64 / darwin-arm64，linux 无预编译需源码编译）；运行时按 `process.platform-arch` 选目录（`lib/utils.js`），因此**单机可交叉打包 win/mac 目标**；`onExit` 回调是 `{exitCode,signal}` 对象（不是老版的 number）。Windows 运行时用 conpty（`prebuilds/<plat>/conpty/`），不需要 winpty（但保留也无妨）。
-- **webview 侧 tsconfig**：需 `moduleResolution: "bundler"` + `lib: ["ES2022","DOM"]` + `noEmit`，并与主 tsconfig 互斥 include（src/webview 从主 tsconfig exclude）。
-- **esbuild 在本机的坑**：postinstall 被 `npm install-scripts` 白名单拦截，需 `npm install-scripts approve esbuild`；批准后 `npx esbuild --version` 验证。
-- **vsce@4 的坑**：
-  - CLI 入口是 `node_modules/@vscode/vsce/vsce`（垫片 `require('./out/main')(process.argv)`）；直接 `node out/main.js` 是**空操作且退出码 0**（曾导致以为打包成功）。
-  - `.vscodeignore` 对依赖目录同样生效：`node_modules/node-pty/src/**`、`deps/**`、`third_party/**`、`typings/**`、`scripts/**`、`prebuilds/**/*.pdb`（PDB 占约 50MB，可裁掉）有效；`node_modules/**` 一行会连生产依赖一起裁掉，不能保留。
   - 打包命令：`node scripts/package.mjs [current|all|<target>]`，用 `process.execPath` + vsce 垫片执行，避免 npx/shell 弃用警告。
-- **Windows + node-pty 交叉打包**：win32-arm64/darwin-* 均可从 Windows 本机出包（预编译已在 node_modules）；linux 目标必须在该平台 `npm install`（源码编译）后打包；`.github/workflows/release.yml` 已配矩阵（ubuntu-latest/ubuntu-24.04-arm/macos-13/macos-latest/windows-latest）。
-- **Webview 实现要点**（本项目已落地）：CSP 用 nonce、不放开 unsafe-inline（xterm 主题色别用 CSS var，xterm 颜色解析不认）；`retainContextWhenHidden: true` 保住隐藏时的会话与渲染；宿主侧在 webview `ready` 前暂存输出；进程退出后 xterm 用 `attachCustomKeyEventHandler` 拦截 Enter 实现重开，无需内联样式/脚本按钮。
-- **PowerShell 包装器坑（再次强调）**：node -e 内联代码里的 `{for(`、`})` 等组合会被包装器误解析，甚至把命令片段当成文件名创建垃圾文件（本仓库曾出现 `{for(const`、`b[1]-a[1])` 两个文件被打进 vsix）。复杂 JS 一律写成脚本文件再执行。
+- **Webview 实现要点**（已随方案删除）：CSP 用 nonce、不放开 unsafe-inline（xterm 主题色别用 CSS var）；`retainContextWhenHidden: true`；宿主侧在 webview `ready` 前暂存输出等。
+- **PowerShell 包装器坑（再次强调）**：node -e 内联代码里的 `{for(`、`})` 等组合会被包装器误解析，甚至把命令片段当成文件名创建垃圾文件。复杂 JS 一律写成脚本文件再执行。
