@@ -1,6 +1,6 @@
 # 项目经验笔记（AI 专用）
 
-每次添加功能或者修改功能后，一定记得更改项目版本号。
+每次添加功能或者修改功能后，一定记得更改项目版本号。三位版本号，除非整个重构，或者更新大发布版本，否则第一位永远不动。功能更新第二位增加，如果仅修复bug等第三位增加。
 
 ## 关键结论（已验证官方文档/源码）
 
@@ -11,6 +11,7 @@
 - `Terminal.sendText(text, true)` 把文本写入 pty stdin 并追加回车；多行文本建议自行按行拆分逐条发送，行为确定。
 - opencode 无参数启动 TUI；`OPENCODE_DISABLE_TERMINAL_TITLE=1` 可阻止 TUI 改写终端标题（保证 VS Code 标签名固定）。
 - 设置项 `"editPresentation": "multilineText"` 让 string 设置在 UI 中渲染为多行文本框（VS Code 1.59+）。
+- `TerminalOptions.name` 是**纯文本**，扩展传入什么就显示什么；**不会**做 `${workspaceFolder}` 这类变量替换（VS Code 的变量替换只覆盖 launch.json / tasks.json 等，官方文档明确「预定义变量不支持在 settings.json 中使用」）。因此 `opencodeDock.terminalName` 只做去空白 + 空值回退。同名终端由 VS Code 自行处理，无需扩展去重。
 - 扩展 API 没有运行时注册快捷键的能力；给扩展加快捷键只能通过 `package.json` 的 `contributes.keybindings` 提供默认键位，用户改绑/禁用走键盘快捷方式界面（UI 或 keybindings.json）。
 - 扩展贡献的键位追加在内置键位之后（优先级更高），会覆盖 VS Code 内置同键位功能（如 Ctrl+Tab 的“最近使用的编辑器”切换），README 中需提示该冲突。
 
@@ -23,7 +24,7 @@
 
 ## 项目结构
 
-- src/extension.ts：激活、状态栏按钮、命令；src/launchPlan.ts：纯函数 buildLaunchLines（已覆盖单元测试）。
+- src/extension.ts：激活、状态栏按钮、命令；src/launchPlan.ts：纯函数 buildLaunchLines / resolveTerminalName（已覆盖单元测试）。
 - tsconfig rootDir "." → 输出 out/src、out/test；package.json main 指向 out/src/extension.js。
 
   - 打包命令：`node scripts/package.mjs [current|all|<target>]`，用 `process.execPath` + vsce 垫片执行，避免 npx/shell 弃用警告。

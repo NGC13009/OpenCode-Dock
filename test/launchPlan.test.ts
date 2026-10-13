@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert/strict';
-import { buildLaunchLines } from '../src/launchPlan';
+import { DEFAULT_TERMINAL_NAME, buildLaunchLines, resolveTerminalName } from '../src/launchPlan';
 
 test('preCommand 按行拆分，忽略空行并清理首尾空白', () => {
   const lines = buildLaunchLines({
@@ -27,4 +27,16 @@ test('启动命令同样会清理首尾空白', () => {
 test('全部为空时仅剩一条空启动命令（不抛出异常）', () => {
   const lines = buildLaunchLines({ preCommand: '\n  \n', command: 'opencode' });
   assert.deepEqual(lines, ['opencode']);
+});
+
+test('resolveTerminalName 使用配置值并清理首尾空白', () => {
+  assert.equal(resolveTerminalName('  OC  '), 'OC');
+});
+
+test('resolveTerminalName 对空/未配置回退为默认标题', () => {
+  assert.equal(resolveTerminalName(''), DEFAULT_TERMINAL_NAME);
+  assert.equal(resolveTerminalName('   '), DEFAULT_TERMINAL_NAME);
+  assert.equal(resolveTerminalName(undefined), DEFAULT_TERMINAL_NAME);
+  assert.equal(resolveTerminalName(null), DEFAULT_TERMINAL_NAME);
+  assert.equal(DEFAULT_TERMINAL_NAME, 'OpenCode');
 });

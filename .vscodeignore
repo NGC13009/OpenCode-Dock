@@ -1,6 +1,7 @@
 .vscode/**
 .agents/**
 .github/**
+.workbuddy/**
 src/**
 test/**
 scripts/**
