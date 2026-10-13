@@ -8,41 +8,50 @@
 
 此插件还提供了默认 `Ctrl+Tab` 的快捷键，用于即刻启动，该快捷键和按下按钮的行为相同。
 
-环境要求：v0.2.0 · VS Code ^1.106.0 · TypeScript
+v0.2.0 · VS Code ^1.106.0 · TypeScript
 
-[TOC]
+目录。。。
 
 ## 功能特性
 
-- **一键启动**：状态栏右侧 `$(rocket) OpenCode` 按钮，或默认快捷键 `Ctrl+Tab`。
-- **编辑器区域标签页**：终端以标签页打开在主窗口，与代码同屏，而非侧边/底部终端面板。
-- **前置环境可准备**：`opencodeDock.preCommand` 多行命令在启动 OpenCode 前逐条执行，适合 `cd`、`export`、`source` 等场景。
-- **与手动开终端一致**：不指定 `shellPath`，沿用 VS Code 默认终端 profile 与继承环境。
-- **标题可配置且稳定**：标签标题由 `opencodeDock.terminalName` 决定（默认 `OpenCode`，留空回退默认值）；同时注入 `OPENCODE_DISABLE_TERMINAL_TITLE=1`，阻止 OpenCode TUI 改写终端标题，标签不会被 TUI 动态覆盖。
-- **逻辑可测**：启动命令的组装与标题回退都是独立纯函数，可单元测试。
+- **一键启动**：点击状态栏右侧的 `OpenCode` 按钮，或按下默认的快捷键 `Ctrl+Tab` 即可快速启动一个OpenCode TUI。这些方式都可以配置为可选项或者自定义。
+- **编辑器区域标签页**：终端以标签页打开在主窗口（而非自动分屏，或者打开到终端窗口等），窗口会更大。
+- **与手动开终端一致**：自动沿用 VS Code 默认终端 profile 与继承环境，这在conda环境之类的场合非常有用，可以使得OpenCode自动的使用正确的终端环境，而无需额外OpenCode插件支持。
+- **前置环境可准备**：可自定义设置多行命令在启动 OpenCode 前逐条执行，适合 `cd`、`export`、`source` 等场景，针对每个项目文件夹都可自定义配置（在本插件的设置中，选择配置到项目，而非配置到用户/全局）。
+- **标题可配置且稳定**：避免非常长并且占地方的选项卡。
 
 ## 快速开始
 
 ### 前提
 
-- VS Code `^1.106.0`
-- 已安装 [OpenCode CLI](https://opencode.ai/docs/)（默认命令为 `opencode`，也可配置为 `bunx opencode`、`npx @sst/opencode` 等）
+- VS Code `^1.106.0` ：最低vscode版本需要大于该版本号。
+- 已另外安装 [OpenCode CLI](https://opencode.ai) ，对于常规的任何已经配置npm的操作系统，可执行 `npm install -g @opencode/cli`  来安装。
+
+### 从vscode插件市场安装
+
+等待补充
+
+### 从GitHub下载release文件
+
+等待补充
 
 ### 从源码安装
 
-```powershell
-npm install
-npm run compile
-npm test
-npm run package
-code --install-extension .\release\opencode-dock-win32-x64-0.2.0.vsix
-```
+```bash
+git clone https://github.com/NGC13009/OpenCode-Dock.git
+cd OpenCode-Dock/
+npm install       # 获取所需依赖
+npm run compile   # 编译node
+npm test          # 执行自动测试，可跳过
+npm run package   # 打包为vsc所需的vsix插件文件
 
-也可以在 VS Code 扩展面板选择“从 VSIX 安装…”选中产物 `release\opencode-dock-<platform>-0.2.0.vsix`。
+# 通过vscode内右键vsix文件选择安装本地vsix插件，或者执行下面的代码：
+code --install-extension ./release/<*.vsix>
+```
 
 ### 使用
 
-点击状态栏右侧的 `$(rocket) OpenCode` 按钮，或按 `Ctrl+Tab`，即在编辑器区域打开终端并启动 OpenCode TUI；终端标签默认为 `OpenCode`，可在设置中改名。
+点击状态栏右侧的 `🚀 OpenCode` 按钮，或按 `Ctrl+Tab`，即在编辑器区域打开终端并启动 OpenCode TUI。如果你没更改过任何插件配置，那么这个OpenCode TUI会继承你在vsc启动的默认终端和环境变量。（例如对于已经选择conda环境和Python解释器的某个vsc项目文件夹）
 
 ### 配置
 
@@ -62,16 +71,26 @@ code --install-extension .\release\opencode-dock-win32-x64-0.2.0.vsix
 }
 ```
 
-> 标题是纯文本，不做 `${...}` 变量替换（VS Code 的变量替换只作用于 launch.json / tasks.json 等配置，不支持设置项），
-> 因此不放具体项目名更合适——终端本来就在编辑器区域、与代码同屏，短标题即可；同一窗口开多个终端时 VS Code 会自行区分。
-
 ### 快捷键
 
 - 默认 `Ctrl+Tab`，与点击按钮等效（触发同一命令 `opencodeDock.launch`）。
 - 改绑/删除：`Ctrl+K Ctrl+S` 搜索 “OpenCode Dock” 或命令 `opencodeDock.launch`，也可直接编辑 `keybindings.json`。
-- 注意：扩展贡献的键位优先于 VS Code 内置键位，`Ctrl+Tab` 默认会覆盖内置的“最近使用的编辑器”切换；需要恢复时按上述方式删除键位即可。VS Code 扩展 API 不支持运行时注册快捷键，因此键位无法做成设置项。
 
-## 原理
+注意：扩展贡献的键位优先于 VS Code 内置键位，`Ctrl+Tab` 默认会覆盖内置的“最近使用的编辑器”切换；需要恢复时按上述方式删除键位即可。VS Code 扩展 API 不支持运行时注册快捷键，因此键位无法做成设置项。
+
+## 注意事项
+
+- 扩展每次触发都会新建终端，不会复用或自动关闭旧终端；不需要时请手动关闭。（这是故意如此设计的，因为我喜欢同时启动多个OpenCode的窗口，虽然OpenCode v2的TUI已经自带标签页了，但是我还是更喜欢vsc的标签页管理方式（可以自然的支持分屏，或者提出该标签页为独立的窗口，或者将其扔到底部终端面板中）。
+- `Ctrl+Tab` 是扩展贡献的默认键位，会覆盖 VS Code 内置的“最近使用的编辑器”切换，可按需改绑。
+- `preCommand` 由默认 shell 逐条执行，属于真实 shell 命令（PowerShell、bash 等）；建议先 `cd` 到目标目录或使用绝对路径。一般来说，你给vsc配置的是什么默认终端，那么就会使用哪个终端。因此请务必确保默认终端内本身有可运行的OpenCode TUI。（即，在此终端内存在安装的OpenCode并且设置为全局环境变量可启动的程序）
+- `opencodeDock.terminalName` 只在新建终端时读取，改名后已打开的旧终端不会追溯重命名。
+- 图标使用 VS Code 内置 codicon `$(rocket)`（看起来是小火箭🚀。状态栏按钮与终端标签页都能看见），需要 VS Code 1.96+。
+
+> 我其实最开始想把启动按钮设置为vsc自己的copilot的那个按钮，也就是窗口标题栏，那个搜索框右侧的按钮。但是vsc的插件无法在窗口标题栏添加自定义按钮，这是因为VS Code 官方扩展 API 不支持（Copilot 的标题栏按钮是 VS Code 核心硬编码），也没有“点击活动栏图标即执行命令”的扩展点；因此只能退而求其次，采用官方支持的状态栏右侧位置。
+>
+> 如需顶部按钮可改用 `editor/title` 菜单贡献，但是这会让这个插件看起来如同OpenCode官方的那个vsc插件的位置一样。这有个问题：如果不打开任何标签页，那么是看不见这个按钮的。
+
+## 原理和开发说明
 
 点击按钮或按快捷键后，扩展触发 `opencodeDock.launch` 命令：
 
@@ -83,41 +102,36 @@ flowchart LR
   E --> F[OpenCode TUI 在编辑器区域运行]
 ```
 
+> Microsoft vs code 的插件说明页目前不会正确的渲染mermaid图，如果您发现图片看起来没渲染成功，或者是源代码形式的，您可以前往[本项目的GitHub页面](https://github.com/NGC13009/OpenCode-Dock.git)查看该说明的配图。
+
 - **编辑器标签页**：`createTerminal` 的 `location` 使用 `ViewColumn.Active`，使终端以标签页出现在编辑器区域；不设置该字段时 VS Code 默认放在底部终端面板。
 - **复用默认终端环境**：不传 `shellPath`/`cwd`，与用户手动点击“+”新建终端行为一致。
 - **标签名可控**：`name` 取自 `opencodeDock.terminalName`（经 `resolveTerminalName` 去空白、为空回退 `OpenCode`）；OpenCode TUI 会通过 OSC 序列改写终端标题，扩展在 `env` 中注入 `OPENCODE_DISABLE_TERMINAL_TITLE=1` 禁用之，保证标签名不被 TUI 覆盖。
 - **命令组装**：`buildLaunchLines`（`src/launchPlan.ts`）是纯函数：`preCommand` 按行拆分、清理首尾空白、忽略空行，最后追加启动命令。与 VS Code API 解耦，因此可在无 GUI 环境下单元测试。
 - **每次新建**：每次触发都新建终端、不复用旧终端，行为可预期。
 
-## 注意事项
+总得来说，这个插件实际上源代码非常的简洁……因为本来就没啥要做的。
 
-- 扩展每次触发都会新建终端，不会复用或自动关闭旧终端；不需要时请手动关闭。
-- `Ctrl+Tab` 是扩展贡献的默认键位，会覆盖 VS Code 内置的“最近使用的编辑器”切换，改绑方法见上节。
-- 无法在窗口**标题栏**添加按钮：VS Code 官方扩展 API 不支持（Copilot 的标题栏按钮是 VS Code 核心硬编码），也没有“点击活动栏图标即执行命令”的扩展点；本扩展采用官方支持的状态栏右侧位置，如需顶部按钮可改用 `editor/title` 菜单贡献。
-- `preCommand` 由默认 shell 逐条执行，属于真实 shell 命令（PowerShell、bash 等）；建议先 `cd` 到目标目录或使用绝对路径。
-- `opencodeDock.terminalName` 只在新建终端时读取，改名后已打开的旧终端不会追溯重命名；留空视为使用默认值。
-- `OPENCODE_DISABLE_TERMINAL_TITLE` 由 OpenCode 识别，仅对本扩展创建的终端生效。
-- 图标使用 VS Code 内置 codicon `$(rocket)`（状态栏按钮与终端标签页），无需打包图片资源；终端标签的 `ThemeIcon` 需要 VS Code 1.96+。
+技术栈：TypeScript + VS Code Extension API；测试用 Node 内置 test runner。
 
-## 开发说明
+目录结构：核心的内容仅为如下内容
 
-- 技术栈：TypeScript + VS Code Extension API；测试用 Node 内置 test runner。
-- 目录结构：
-
-```
-src/extension.ts       # 激活：注册命令、状态栏按钮、终端
-src/launchPlan.ts      # 启动命令组装 + 终端标题回退（纯函数）
-test/                  # 单元测试（launchPlan）
-scripts/package.mjs    # vsce 打包（current / all / 指定 target）
-out/                   # tsc 编译输出（构建生成）
-release/               # 打包产物 vsix（构建生成）
+```text
+./
+├── src/
+│   ├── extension.ts       # 激活：注册命令、状态栏按钮、终端
+│   └── launchPlan.ts      # 启动命令组装 + 终端标题回退（纯函数）
+├── test/                  # 单元测试（launchPlan）
+├── scripts/
+│   └── package.mjs        # vsce 打包（current / all / 指定 target）
+├── out/                   # tsc 编译输出（构建生成）
+└── release/               # 打包产物 vsix（构建生成）
 ```
 
-- 构建：`npm run compile`（tsc 输出到 `out/`）。
-- 调试：打开项目目录后按 `F5` 启动 Extension Development Host（见 `.vscode/launch.json`）。
-- 测试：`npm test`（`pretest` 自动编译），覆盖 `buildLaunchLines` 与 `resolveTerminalName`，无需真实 VS Code 环境。
-- 打包：`npm run package` 打包当前平台；`npm run package:all` 遍历全部支持平台（win32/darwin/linux × x64/arm64）。
-- 贡献：保持 `launchPlan.ts` 中的函数为无副作用的纯函数；新增逻辑应补充对应单元测试。
+如需贡献：
+
+- 保持 `launchPlan.ts` 中的函数为无副作用的纯函数；
+- 新增逻辑应补充对应单元测试。
 
 ## 许可证与作者信息
 
