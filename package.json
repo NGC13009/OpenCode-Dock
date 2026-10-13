@@ -1,0 +1,109 @@
+{
+  "name": "opencode-dock",
+  "displayName": "OpenCode Dock",
+  "description": "一键启动 OpenCode TUI：默认在编辑器区域以标签页打开，也可在第二侧栏的内嵌终端中运行，支持启动前自定义命令与快捷键触发。",
+  "version": "0.1.0",
+  "publisher": "ngc13009",
+  "engines": {
+    "vscode": "^1.106.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/src/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:opencodeDock.sidebarTerminal"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "secondarySidebar": [
+        {
+          "id": "opencodeDockContainer",
+          "title": "OpenCode",
+          "icon": "$(rocket)"
+        }
+      ]
+    },
+    "views": {
+      "opencodeDockContainer": [
+        {
+          "id": "opencodeDock.sidebarTerminal",
+          "name": "OpenCode",
+          "type": "webview",
+          "icon": "$(rocket)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "opencodeDock.launch",
+        "title": "启动 OpenCode Dock",
+        "category": "OpenCode"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "opencodeDock.launch",
+        "key": "ctrl+tab"
+      }
+    ],
+    "configuration": {
+      "title": "OpenCode Dock",
+      "properties": {
+        "opencodeDock.command": {
+          "type": "string",
+          "default": "opencode",
+          "description": "启动 OpenCode TUI 的命令。例如 opencode、bunx opencode、npx @sst/opencode 或可执行文件的绝对路径。"
+        },
+        "opencodeDock.preCommand": {
+          "type": "string",
+          "default": "",
+          "editPresentation": "multilineText",
+          "markdownDescription": "在启动 OpenCode 前依次执行的命令，每行一条，空行会被忽略，支持换行。适用场景：`cd` 到项目目录、`export` 环境变量或 `source` 环境脚本等。",
+          "scope": "window"
+        },
+        "opencodeDock.location": {
+          "type": "string",
+          "enum": [
+            "editor",
+            "sidebar"
+          ],
+          "default": "editor",
+          "enumDescriptions": [
+            "在编辑器区域以标签页打开终端",
+            "在第二侧栏的内嵌终端中打开"
+          ],
+          "description": "OpenCode TUI 的打开位置：编辑器区域标签页，或第二侧栏。"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./ && tsc -p tsconfig.webview.json && node scripts/build-webview.mjs",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node --test \"out/test/*.test.js\"",
+    "prepackage": "node -e \"require('fs').mkdirSync('release',{recursive:true})\"",
+    "package": "node scripts/package.mjs",
+    "package:all": "node scripts/package.mjs all"
+  },
+  "dependencies": {
+    "node-pty": "^1.1.0"
+  },
+  "bundledDependencies": [
+    "node-pty"
+  ],
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/vscode": "^1.106.0",
+    "@vscode/vsce": "^4.0.0",
+    "@xterm/addon-fit": "^0.11.0",
+    "@xterm/xterm": "^6.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.5.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}
