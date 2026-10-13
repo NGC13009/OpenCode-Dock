@@ -1,6 +1,6 @@
 {
   "extension.displayName": "OpenCode Dock",
-  "extension.description": "一键启动 OpenCode TUI：在编辑器区域以标签页打开，支持启动前自定义命令与快捷键触发。",
+  "extension.description": "任何情况下一键启动 OpenCode TUI：在编辑器区域以标签页打开，支持启动前自定义命令与快捷键触发。自动让OpenCode继承正确的终端环境。",
   "command.launch.title": "启动 OpenCode Dock",
   "command.launch.category": "OpenCode",
   "configuration.title": "OpenCode Dock",

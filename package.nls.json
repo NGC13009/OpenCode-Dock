@@ -1,6 +1,6 @@
 {
   "extension.displayName": "OpenCode Dock",
-  "extension.description": "Launch the OpenCode TUI with one click: it opens as a tab in the editor area, and supports custom pre-launch commands and a keyboard shortcut.",
+  "extension.description": "One-click launch OpenCode TUI in any situation: it opens as a tab in the editor area, supports custom pre-launch commands and keyboard shortcut triggers, and automatically lets OpenCode inherit the correct terminal environment.",
   "command.launch.title": "Launch OpenCode Dock",
   "command.launch.category": "OpenCode",
   "configuration.title": "OpenCode Dock",
