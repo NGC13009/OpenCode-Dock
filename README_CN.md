@@ -10,7 +10,7 @@
 
 此扩展还提供了默认 `Ctrl+Tab` 的快捷键，用于即刻启动，该快捷键和按下按钮的行为相同。
 
-v0.2.2 · VS Code ^1.106.0 · TypeScript
+v0.3.0 · VS Code ^1.106.0 · TypeScript
 
 ## 目录
 
@@ -23,6 +23,7 @@ v0.2.2 · VS Code ^1.106.0 · TypeScript
   - [使用](#使用)
   - [配置](#配置)
   - [快捷键](#快捷键)
+  - [本地化](#本地化)
 - [注意事项](#注意事项)
 - [原理和开发说明](#原理和开发说明)
 - [许可证与作者信息](#许可证与作者信息)
@@ -34,6 +35,7 @@ v0.2.2 · VS Code ^1.106.0 · TypeScript
 - **与手动开终端一致**：自动沿用 VS Code 默认终端 profile 与继承环境，这在 Conda 环境之类的场合非常有用，可以使得 OpenCode 自动使用正确的终端环境，而无需额外的 OpenCode 扩展支持。
 - **前置环境可准备**：可自定义设置多行命令在启动 OpenCode 前逐条执行，适合 `cd`、`export`、`source` 等场景，针对每个项目文件夹都可自定义配置（在本扩展的设置中，选择配置到项目，而非配置到用户/全局）。
 - **标题可配置且稳定**：避免非常长并且占地方的选项卡。
+- **界面本地化**：命令标题、设置说明与悬浮提示都跟随 VS Code 的显示语言，内置英文（默认语言，同时也是其他语言的回退）与简体中文。
 
 ## 快速开始
 
@@ -93,6 +95,21 @@ code --install-extension ./release/<*.vsix>
 
 注意：扩展贡献的键位优先于 VS Code 内置键位，`Ctrl+Tab` 默认会覆盖内置的“最近使用的编辑器”切换；需要恢复时按上述方式删除键位即可。VS Code 扩展 API 不支持运行时注册快捷键，因此键位无法做成设置项。
 
+### 本地化
+
+本扩展显示的所有文字都跟随 VS Code 的显示语言，没有单独的语言设置项。
+
+| 位置 | 本地化内容 |
+| --- | --- |
+| 命令面板 | 贡献的命令标题「启动 OpenCode Dock」及其分类「OpenCode」 |
+| 设置界面与 `settings.json` 悬浮提示 | `opencodeDock.command`、`opencodeDock.preCommand`、`opencodeDock.terminalName` 三项设置的说明 |
+| 状态栏悬浮提示 | `🚀 OpenCode` 按钮上的提示文字 |
+| 文档 | `README.md`（英文）与 `README_CN.md`（简体中文），通过文件顶部的语言切换行切换 |
+
+- 已提供语言：**英文**（默认语言，同时也是其他语言的回退）与**简体中文**。
+- 修改显示语言：在命令面板执行 **Configure Display Language（配置显示语言）**。
+- 新增语言：复制两份英文文件 —— `package.nls.json` → `package.nls.<locale>.json`，`l10n/bundle.l10n.json` → `l10n/bundle.l10n.<locale>.json` —— 再翻译其中的值。`npm test` 会校验各语言的键集合保持一致，并确保英文默认文件中不残留中文。
+
 ## 注意事项
 
 - 扩展每次触发都会新建终端，不会复用或自动关闭旧终端；不需要时请手动关闭。（这是故意如此设计的，因为我喜欢同时启动多个 OpenCode 窗口。虽然 OpenCode v2 的 TUI 已经自带标签页，但我还是更喜欢 VS Code 的标签页管理方式（可以自然地支持分屏，或者把该标签页独立为窗口，或者将其扔到底部终端面板中）。）
@@ -124,6 +141,7 @@ flowchart LR
 - **标签名可控**：`name` 取自 `opencodeDock.terminalName`（经 `resolveTerminalName` 去空白、为空回退 `OpenCode`）；OpenCode TUI 会通过 OSC 序列改写终端标题，扩展在 `env` 中注入 `OPENCODE_DISABLE_TERMINAL_TITLE=1` 禁用之，保证标签名不被 TUI 覆盖。
 - **命令组装**：`buildLaunchLines`（`src/launchPlan.ts`）是纯函数：`preCommand` 按行拆分、清理首尾空白、忽略空行，最后追加启动命令。与 VS Code API 解耦，因此可在无 GUI 环境下单元测试。
 - **每次新建**：每次触发都新建终端、不复用旧终端，行为可预期。
+- **本地化**：用户可见文字要么是 `package.json` 中的 `%key%` 占位符（由 `package.nls.json` / `package.nls.zh-cn.json` 解析），要么是 `vscode.l10n.t()` 调用（由 `l10n/bundle.l10n.<locale>.json` 解析）。键即英文原文，因此缺失翻译时自动回退英文，而不会显示原始键名。
 
 总的来说，这个扩展实际上源代码非常的简洁……因为本来就没啥要做的。
 
@@ -136,7 +154,10 @@ flowchart LR
 ├── src/
 │   ├── extension.ts       # 激活：注册命令、状态栏按钮、终端
 │   └── launchPlan.ts      # 启动命令组装 + 终端标题回退（纯函数）
-├── test/                  # 单元测试（launchPlan）
+├── test/                  # 单元测试（启动计划 + i18n 一致性）
+├── l10n/                  # 运行时文案：bundle.l10n.json、bundle.l10n.zh-cn.json
+├── package.nls.json       # package.json 贡献点的英文（默认）文案
+├── package.nls.zh-cn.json # package.json 贡献点的简体中文文案
 ├── scripts/
 │   └── package.mjs        # vsce 打包（current / all / 指定 target）
 ├── out/                   # tsc 编译输出（构建生成）
@@ -146,7 +167,8 @@ flowchart LR
 如需贡献：
 
 - 保持 `launchPlan.ts` 中的函数为无副作用的纯函数；
-- 新增逻辑应补充对应单元测试。
+- 新增逻辑应补充对应单元测试；
+- 新增任何用户可见文案都必须同时写入四份本地化文件（`package.json` 贡献点与运行时文案，各含英文、简体中文），否则 `npm test` 会失败。
 
 ## 许可证与作者信息
 

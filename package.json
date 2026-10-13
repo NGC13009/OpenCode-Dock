@@ -1,8 +1,8 @@
 {
   "name": "opencode-dock",
-  "displayName": "OpenCode Dock",
-  "description": "一键启动 OpenCode TUI：在编辑器区域以标签页打开，支持启动前自定义命令与快捷键触发。",
-  "version": "0.2.2",
+  "displayName": "%extension.displayName%",
+  "description": "%extension.description%",
+  "version": "0.3.0",
   "publisher": "ngc13009",
   "license": "GPL-3.0-only",
   "icon": "ico.png",
@@ -17,6 +17,7 @@
     "Other"
   ],
   "main": "./out/src/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "onStartupFinished"
   ],
@@ -24,8 +25,8 @@
     "commands": [
       {
         "command": "opencodeDock.launch",
-        "title": "启动 OpenCode Dock",
-        "category": "OpenCode"
+        "title": "%command.launch.title%",
+        "category": "%command.launch.category%"
       }
     ],
     "keybindings": [
@@ -35,24 +36,24 @@
       }
     ],
     "configuration": {
-      "title": "OpenCode Dock",
+      "title": "%configuration.title%",
       "properties": {
         "opencodeDock.command": {
           "type": "string",
           "default": "opencode",
-          "description": "启动 OpenCode TUI 的命令。例如 opencode、bunx opencode、npx @sst/opencode 或可执行文件的绝对路径。"
+          "description": "%configuration.command.description%"
         },
         "opencodeDock.preCommand": {
           "type": "string",
           "default": "",
           "editPresentation": "multilineText",
-          "markdownDescription": "在启动 OpenCode 前依次执行的命令，每行一条，空行会被忽略，支持换行。适用场景：`cd` 到项目目录、`export` 环境变量或 `source` 环境脚本等。",
+          "markdownDescription": "%configuration.preCommand.markdownDescription%",
           "scope": "window"
         },
         "opencodeDock.terminalName": {
           "type": "string",
           "default": "OpenCode",
-          "markdownDescription": "终端标签页的标题。留空则回退为默认值 `OpenCode`。仅影响此后新建的终端。",
+          "markdownDescription": "%configuration.terminalName.markdownDescription%",
           "scope": "window"
         }
       }

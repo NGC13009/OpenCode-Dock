@@ -10,7 +10,7 @@ It also automatically names that terminal `OpenCode` (the title text is customiz
 
 The extension also ships a default `Ctrl+Tab` keybinding for instant launching, which behaves the same as pressing the button.
 
-v0.2.2 · VS Code ^1.106.0 · TypeScript
+v0.3.0 · VS Code ^1.106.0 · TypeScript
 
 ## Contents
 
@@ -23,6 +23,7 @@ v0.2.2 · VS Code ^1.106.0 · TypeScript
   - [Usage](#usage)
   - [Configuration](#configuration)
   - [Keybindings](#keybindings)
+  - [Localization](#localization)
 - [Notes](#notes)
 - [How It Works & Development Notes](#how-it-works--development-notes)
 - [License & Author](#license--author)
@@ -34,6 +35,7 @@ v0.2.2 · VS Code ^1.106.0 · TypeScript
 - **Consistent with opening a terminal manually**: It reuses the VS Code default terminal profile and inherits the environment, which is very useful in cases like Conda environments — OpenCode automatically uses the correct terminal environment without any extra OpenCode extension support.
 - **Pre-launch environment setup**: You can configure multiple lines of commands to be executed one by one before OpenCode launches, which suits scenarios such as `cd`, `export`, and `source`. This is configurable per project folder (in the extension settings, choose to configure it for the project rather than for the user/global).
 - **Configurable and stable title**: Avoids an extremely long and space-hogging tab.
+- **Localized UI**: Command titles, setting descriptions, and hover tooltips follow the VS Code display language. English (the default, and the fallback for every other language) and Simplified Chinese are shipped.
 
 ## Getting Started
 
@@ -93,6 +95,21 @@ Example:
 
 Note: keybindings contributed by extensions take precedence over VS Code built-in ones, and `Ctrl+Tab` by default overrides the built-in "most recently used editor" switching. To restore it, just delete the keybinding as described above. The VS Code extension API does not support registering keybindings at runtime, so the keybinding cannot be exposed as a setting.
 
+### Localization
+
+Everything this extension displays follows the VS Code display language. There is no separate language setting to configure.
+
+| Where | What is localized |
+| --- | --- |
+| Command Palette | The contributed command title "Launch OpenCode Dock" and its "OpenCode" category |
+| Settings UI and `settings.json` hover | The descriptions of `opencodeDock.command`, `opencodeDock.preCommand`, and `opencodeDock.terminalName` |
+| Status bar hover | The tooltip on the `🚀 OpenCode` button |
+| Documentation | `README.md` (English) and `README_CN.md` (Simplified Chinese); switch with the link at the top of either file |
+
+- Languages shipped: **English** (the default, and the fallback for any language that is not shipped) and **简体中文**.
+- To change the language, run **Configure Display Language** from the Command Palette.
+- To add a language, copy the two English files — `package.nls.json` to `package.nls.<locale>.json`, and `l10n/bundle.l10n.json` to `l10n/bundle.l10n.<locale>.json` — and translate the values. `npm test` verifies that the key sets stay identical across languages and that no Chinese text leaks into the English default files.
+
 ## Notes
 
 - The extension creates a new terminal on every trigger; it does not reuse or automatically close old terminals. Close them manually when you no longer need them. (This is intentional by design, because I like launching multiple OpenCode windows at once. Even though the OpenCode v2 TUI already has its own tabs, I still prefer VS Code's tab management — it naturally supports splitting, popping a tab out into a separate window, or throwing it into the bottom terminal panel.)
@@ -124,6 +141,7 @@ flowchart LR
 - **Controllable tab name**: `name` comes from `opencodeDock.terminalName` (via `resolveTerminalName`, which trims whitespace and falls back to `OpenCode` when empty). The OpenCode TUI rewrites the terminal title through OSC sequences, so the extension injects `OPENCODE_DISABLE_TERMINAL_TITLE=1` into `env` to disable that and keep the tab name from being overwritten by the TUI.
 - **Command assembly**: `buildLaunchLines` (`src/launchPlan.ts`) is a pure function: it splits `preCommand` by line, trims leading and trailing whitespace, ignores blank lines, and finally appends the launch command. It is decoupled from the VS Code API, so it can be unit tested without a GUI environment.
 - **Always a new terminal**: Every trigger creates a new terminal and does not reuse old ones, so the behavior is predictable.
+- **Localization**: user-visible text is either a `%key%` placeholder in `package.json` (resolved from `package.nls.json` / `package.nls.zh-cn.json`) or a `vscode.l10n.t()` call (resolved from `l10n/bundle.l10n.<locale>.json`). The English source strings are the keys, so a string without a translation degrades to English rather than showing a raw key.
 
 All in all, the source code of this extension is really quite simple... because there was not much to do in the first place.
 
@@ -136,7 +154,10 @@ Directory structure: the core content is just the following.
 ├── src/
 │   ├── extension.ts       # Activation: registers the command, status bar button, terminal
 │   └── launchPlan.ts      # Launch command assembly + terminal title fallback (pure functions)
-├── test/                  # Unit tests (launchPlan)
+├── test/                  # Unit tests (launch plan + i18n consistency)
+├── l10n/                  # Runtime strings: bundle.l10n.json, bundle.l10n.zh-cn.json
+├── package.nls.json       # English (default) text for package.json contributions
+├── package.nls.zh-cn.json # Simplified Chinese text for package.json contributions
 ├── scripts/
 │   └── package.mjs        # vsce packaging (current / all / specified target)
 ├── out/                   # tsc compile output (build artifact)
@@ -146,7 +167,8 @@ Directory structure: the core content is just the following.
 If you would like to contribute:
 
 - Keep the functions in `launchPlan.ts` side-effect-free pure functions;
-- New logic should come with corresponding unit tests.
+- New logic should come with corresponding unit tests;
+- Any new user-visible string must be added to all four localization files (English and Simplified Chinese, for both `package.json` contributions and runtime text) — `npm test` will fail otherwise.
 
 ## License & Author
 

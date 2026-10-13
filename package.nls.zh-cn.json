@@ -1,0 +1,10 @@
+{
+  "extension.displayName": "OpenCode Dock",
+  "extension.description": "一键启动 OpenCode TUI：在编辑器区域以标签页打开，支持启动前自定义命令与快捷键触发。",
+  "command.launch.title": "启动 OpenCode Dock",
+  "command.launch.category": "OpenCode",
+  "configuration.title": "OpenCode Dock",
+  "configuration.command.description": "启动 OpenCode TUI 的命令。例如 opencode、bunx opencode、npx @sst/opencode 或可执行文件的绝对路径。",
+  "configuration.preCommand.markdownDescription": "在启动 OpenCode 前依次执行的命令，每行一条，空行会被忽略，支持换行。适用场景：`cd` 到项目目录、`export` 环境变量或 `source` 环境脚本等。",
+  "configuration.terminalName.markdownDescription": "终端标签页的标题。留空则回退为默认值 `OpenCode`。仅影响此后新建的终端。"
+}

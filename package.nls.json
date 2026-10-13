@@ -1,0 +1,10 @@
+{
+  "extension.displayName": "OpenCode Dock",
+  "extension.description": "Launch the OpenCode TUI with one click: it opens as a tab in the editor area, and supports custom pre-launch commands and a keyboard shortcut.",
+  "command.launch.title": "Launch OpenCode Dock",
+  "command.launch.category": "OpenCode",
+  "configuration.title": "OpenCode Dock",
+  "configuration.command.description": "The command used to launch the OpenCode TUI. For example: opencode, bunx opencode, npx @sst/opencode, or an absolute path to an executable.",
+  "configuration.preCommand.markdownDescription": "Commands executed in order before OpenCode launches, one per line; blank lines are ignored and line breaks are supported. Typical uses: `cd` into a project directory, `export` environment variables, or `source` an environment script.",
+  "configuration.terminalName.markdownDescription": "The title of the terminal tab. If left empty it falls back to the default `OpenCode`. Changes only affect terminals created afterwards."
+}

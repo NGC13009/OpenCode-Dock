@@ -4,7 +4,8 @@ import { DEFAULT_TERMINAL_NAME, buildLaunchLines, resolveTerminalName } from './
 export function activate(context: vscode.ExtensionContext): void {
   const launchItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   launchItem.text = '$(rocket) OpenCode';
-  launchItem.tooltip = '在当前活动的主窗口启动 OpenCode TUI';
+  // 悬浮提示文案走 l10n：键为英文原文，缺失翻译时自动回退英文
+  launchItem.tooltip = vscode.l10n.t('Launch the OpenCode TUI in the active window');
   launchItem.command = 'opencodeDock.launch';
   launchItem.show();
   context.subscriptions.push(launchItem);
