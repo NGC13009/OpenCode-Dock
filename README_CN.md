@@ -60,7 +60,12 @@ cd OpenCode-Dock/
 npm install       # 获取所需依赖
 npm run compile   # 编译 Node
 npm test          # 执行自动测试，可跳过
-npm run package   # 打包为 VS Code 所需的 VSIX 扩展文件
+
+# 打包为 VS Code 所需的 VSIX 扩展文件
+npm run package
+
+# 其实更加推荐使用vsce打包
+vsce package
 
 # 在 VS Code 中右键 VSIX 文件选择安装本地扩展，或者执行下面的命令：
 code --install-extension ./release/<*.vsix>

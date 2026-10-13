@@ -60,7 +60,12 @@ cd OpenCode-Dock/
 npm install       # fetch the required dependencies
 npm run compile   # compile Node
 npm test          # run automated tests, optional
-npm run package   # package into the VSIX extension file required by VS Code
+
+# package into the VSIX extension file required by VS Code
+npm run package
+
+# or, pack it with vsce better
+vsce package
 
 # In VS Code, right-click the VSIX file and choose to install it as a local extension, or run:
 code --install-extension ./release/<*.vsix>
