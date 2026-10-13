@@ -1,67 +1,82 @@
 # OpenCode Dock
 
-这是一个很简单的插件，它只有一个作用，就是任何情况下无条件的在VSCode右下角状态栏提供一个可以点击的图标，点击之后就可以在活动的主窗口启动一个 [OpenCode](https://opencode.ai) TUI。
+[English](README.md) | [简体中文](README_CN.md)
 
-启动的时候会自动继承VSCode配置的用户启动终端环境。例如，当前代码仓库为Python，并且设置了Conda环境，那么OpenCode会继承该Conda环境，从而使得OpenCode内部工作的模型可以正确的调用包含正确环境的终端。
+This is a very simple extension that does exactly one thing: it unconditionally puts a clickable icon in the VS Code status bar at the bottom right. Click it and an [OpenCode](https://opencode.ai) TUI launches in the active main window.
 
-同时会自动将该终端标题命名为`OpenCode`（标题文本可自定义），避免非常长并且占地方的选项卡。
+When it starts, it automatically inherits the user terminal environment configured in VS Code. For example, if the current repository is a Python project and a Conda environment is selected, OpenCode inherits that Conda environment, so the model working inside OpenCode can correctly invoke a terminal that has the right environment.
 
-此插件还提供了默认 `Ctrl+Tab` 的快捷键，用于即刻启动，该快捷键和按下按钮的行为相同。
+It also automatically names that terminal `OpenCode` (the title text is customizable), avoiding an extremely long and space-hogging tab.
 
-v0.2.0 · VS Code ^1.106.0 · TypeScript
+The extension also ships a default `Ctrl+Tab` keybinding for instant launching, which behaves the same as pressing the button.
 
-目录。。。
+v0.2.2 · VS Code ^1.106.0 · TypeScript
 
-## 功能特性
+## Contents
 
-- **一键启动**：点击状态栏右侧的 `OpenCode` 按钮，或按下默认的快捷键 `Ctrl+Tab` 即可快速启动一个OpenCode TUI。这些方式都可以配置为可选项或者自定义。
-- **编辑器区域标签页**：终端以标签页打开在主窗口（而非自动分屏，或者打开到终端窗口等），窗口会更大。
-- **与手动开终端一致**：自动沿用 VS Code 默认终端 profile 与继承环境，这在conda环境之类的场合非常有用，可以使得OpenCode自动的使用正确的终端环境，而无需额外OpenCode插件支持。
-- **前置环境可准备**：可自定义设置多行命令在启动 OpenCode 前逐条执行，适合 `cd`、`export`、`source` 等场景，针对每个项目文件夹都可自定义配置（在本插件的设置中，选择配置到项目，而非配置到用户/全局）。
-- **标题可配置且稳定**：避免非常长并且占地方的选项卡。
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Install from the VS Code Marketplace](#install-from-the-vs-code-marketplace)
+  - [Download a Release from GitHub](#download-a-release-from-github)
+  - [Install from source](#install-from-source)
+  - [Usage](#usage)
+  - [Configuration](#configuration)
+  - [Keybindings](#keybindings)
+- [Notes](#notes)
+- [How It Works & Development Notes](#how-it-works--development-notes)
+- [License & Author](#license--author)
 
-## 快速开始
+## Features
 
-### 前提
+- **One-click launch**: Click the `OpenCode` button on the right side of the status bar, or press the default `Ctrl+Tab` keybinding, to quickly launch an OpenCode TUI. Either way can be made optional or customized.
+- **Editor-area tab**: The terminal opens as a tab in the main window (rather than auto-splitting or opening into the terminal window), so the window is larger.
+- **Consistent with opening a terminal manually**: It reuses the VS Code default terminal profile and inherits the environment, which is very useful in cases like Conda environments — OpenCode automatically uses the correct terminal environment without any extra OpenCode extension support.
+- **Pre-launch environment setup**: You can configure multiple lines of commands to be executed one by one before OpenCode launches, which suits scenarios such as `cd`, `export`, and `source`. This is configurable per project folder (in the extension settings, choose to configure it for the project rather than for the user/global).
+- **Configurable and stable title**: Avoids an extremely long and space-hogging tab.
 
-- VS Code `^1.106.0` ：最低vscode版本需要大于该版本号。
-- 已另外安装 [OpenCode CLI](https://opencode.ai) ，对于常规的任何已经配置npm的操作系统，可执行 `npm install -g @opencode/cli`  来安装。
+## Getting Started
 
-### 从vscode插件市场安装
+### Prerequisites
 
-等待补充
+- VS Code `^1.106.0`: the minimum VS Code version must be greater than this version number.
+- [OpenCode CLI](https://opencode.ai) installed separately. On any conventional OS with npm configured, you can install it with `npm install -g @opencode/cli`.
 
-### 从GitHub下载release文件
+### Install from the VS Code Marketplace
 
-等待补充
+To be added
 
-### 从源码安装
+### Download a Release from GitHub
+
+To be added
+
+### Install from source
 
 ```bash
 git clone https://github.com/NGC13009/OpenCode-Dock.git
 cd OpenCode-Dock/
-npm install       # 获取所需依赖
-npm run compile   # 编译node
-npm test          # 执行自动测试，可跳过
-npm run package   # 打包为vsc所需的vsix插件文件
+npm install       # fetch the required dependencies
+npm run compile   # compile Node
+npm test          # run automated tests, optional
+npm run package   # package into the VSIX extension file required by VS Code
 
-# 通过vscode内右键vsix文件选择安装本地vsix插件，或者执行下面的代码：
+# In VS Code, right-click the VSIX file and choose to install it as a local extension, or run:
 code --install-extension ./release/<*.vsix>
 ```
 
-### 使用
+### Usage
 
-点击状态栏右侧的 `🚀 OpenCode` 按钮，或按 `Ctrl+Tab`，即在编辑器区域打开终端并启动 OpenCode TUI。如果你没更改过任何插件配置，那么这个OpenCode TUI会继承你在vsc启动的默认终端和环境变量。（例如对于已经选择conda环境和Python解释器的某个vsc项目文件夹）
+Click the `🚀 OpenCode` button on the right side of the status bar, or press `Ctrl+Tab`, and a terminal opens in the editor area with the OpenCode TUI running in it. If you have not changed any extension configuration, this OpenCode TUI inherits the default terminal and environment variables you started in VS Code (for example, a VS Code project folder with a Conda environment and a Python interpreter already selected).
 
-### 配置
+### Configuration
 
-| 设置 | 类型 | 默认值 | 说明 |
+| Setting | Type | Default | Description |
 | --- | --- | --- | --- |
-| `opencodeDock.command` | string | `opencode` | 启动 OpenCode 的命令，例如 `opencode`、`bunx opencode`、`npx @sst/opencode` 或可执行文件绝对路径 |
-| `opencodeDock.preCommand` | string | `""` | 启动 OpenCode 前依次执行的命令，每行一条，空行忽略（设置中以多行文本编辑） |
-| `opencodeDock.terminalName` | string | `OpenCode` | 终端标签页标题；留空则回退为 `OpenCode`，改动只影响此后新建的终端 |
+| `opencodeDock.command` | string | `opencode` | The command used to launch OpenCode, such as `opencode`, `bunx opencode`, `npx @sst/opencode`, or an absolute path to an executable |
+| `opencodeDock.preCommand` | string | `""` | Commands executed in order before launching OpenCode, one per line; blank lines are ignored (edited as multiline text in settings) |
+| `opencodeDock.terminalName` | string | `OpenCode` | The terminal tab title; if left empty it falls back to `OpenCode`, and changes only affect terminals created afterwards |
 
-示例：
+Example:
 
 ```json
 {
@@ -71,69 +86,69 @@ code --install-extension ./release/<*.vsix>
 }
 ```
 
-### 快捷键
+### Keybindings
 
-- 默认 `Ctrl+Tab`，与点击按钮等效（触发同一命令 `opencodeDock.launch`）。
-- 改绑/删除：`Ctrl+K Ctrl+S` 搜索 “OpenCode Dock” 或命令 `opencodeDock.launch`，也可直接编辑 `keybindings.json`。
+- Defaults to `Ctrl+Tab`, equivalent to clicking the button (both trigger the same command, `opencodeDock.launch`).
+- To rebind or remove it: press `Ctrl+K Ctrl+S` and search for "OpenCode Dock" or the command `opencodeDock.launch`, or edit `keybindings.json` directly.
 
-注意：扩展贡献的键位优先于 VS Code 内置键位，`Ctrl+Tab` 默认会覆盖内置的“最近使用的编辑器”切换；需要恢复时按上述方式删除键位即可。VS Code 扩展 API 不支持运行时注册快捷键，因此键位无法做成设置项。
+Note: keybindings contributed by extensions take precedence over VS Code built-in ones, and `Ctrl+Tab` by default overrides the built-in "most recently used editor" switching. To restore it, just delete the keybinding as described above. The VS Code extension API does not support registering keybindings at runtime, so the keybinding cannot be exposed as a setting.
 
-## 注意事项
+## Notes
 
-- 扩展每次触发都会新建终端，不会复用或自动关闭旧终端；不需要时请手动关闭。（这是故意如此设计的，因为我喜欢同时启动多个OpenCode的窗口，虽然OpenCode v2的TUI已经自带标签页了，但是我还是更喜欢vsc的标签页管理方式（可以自然的支持分屏，或者提出该标签页为独立的窗口，或者将其扔到底部终端面板中）。
-- `Ctrl+Tab` 是扩展贡献的默认键位，会覆盖 VS Code 内置的“最近使用的编辑器”切换，可按需改绑。
-- `preCommand` 由默认 shell 逐条执行，属于真实 shell 命令（PowerShell、bash 等）；建议先 `cd` 到目标目录或使用绝对路径。一般来说，你给vsc配置的是什么默认终端，那么就会使用哪个终端。因此请务必确保默认终端内本身有可运行的OpenCode TUI。（即，在此终端内存在安装的OpenCode并且设置为全局环境变量可启动的程序）
-- `opencodeDock.terminalName` 只在新建终端时读取，改名后已打开的旧终端不会追溯重命名。
-- 图标使用 VS Code 内置 codicon `$(rocket)`（看起来是小火箭🚀。状态栏按钮与终端标签页都能看见），需要 VS Code 1.96+。
+- The extension creates a new terminal on every trigger; it does not reuse or automatically close old terminals. Close them manually when you no longer need them. (This is intentional by design, because I like launching multiple OpenCode windows at once. Even though the OpenCode v2 TUI already has its own tabs, I still prefer VS Code's tab management — it naturally supports splitting, popping a tab out into a separate window, or throwing it into the bottom terminal panel.)
+- `Ctrl+Tab` is the default keybinding contributed by the extension and overrides VS Code's built-in "most recently used editor" switching; rebind it as needed.
+- `preCommand` is executed line by line by the default shell, so these are real shell commands (PowerShell, bash, etc.); it is recommended to `cd` to the target directory first or use absolute paths. Generally speaking, whichever default terminal you configured in VS Code is the one that gets used. So make sure that terminal itself can run an OpenCode TUI (that is, OpenCode is installed in that terminal and is a program that can be launched as a global environment variable).
+- `opencodeDock.terminalName` is only read when a terminal is created; terminals already open are not retroactively renamed after you change it.
+- The icon uses the VS Code built-in codicon `$(rocket)` (it looks like a little rocket 🚀, visible on both the status bar button and the terminal tab). This requires VS Code 1.96+.
 
-> 我其实最开始想把启动按钮设置为vsc自己的copilot的那个按钮，也就是窗口标题栏，那个搜索框右侧的按钮。但是vsc的插件无法在窗口标题栏添加自定义按钮，这是因为VS Code 官方扩展 API 不支持（Copilot 的标题栏按钮是 VS Code 核心硬编码），也没有“点击活动栏图标即执行命令”的扩展点；因此只能退而求其次，采用官方支持的状态栏右侧位置。
+> I originally wanted to put the launch button where VS Code's own Copilot button lives — the one in the window title bar, to the right of the search box. But VS Code extensions cannot add custom buttons to the window title bar, because the official VS Code extension API does not support it (the Copilot title bar button is hardcoded into VS Code core), and there is no extension point for "run a command when the activity bar icon is clicked". So the next best thing was to use the officially supported position on the right side of the status bar.
 >
-> 如需顶部按钮可改用 `editor/title` 菜单贡献，但是这会让这个插件看起来如同OpenCode官方的那个vsc插件的位置一样。这有个问题：如果不打开任何标签页，那么是看不见这个按钮的。
+> If you want a top button, you could use an `editor/title` menu contribution instead, but that would make this extension look like it sits in the same place as the official OpenCode VS Code extension. The problem: if no tab is open, the button is invisible.
 
-## 原理和开发说明
+## How It Works & Development Notes
 
-点击按钮或按快捷键后，扩展触发 `opencodeDock.launch` 命令：
+After you click the button or press the keybinding, the extension triggers the `opencodeDock.launch` command:
 
 ```mermaid
 flowchart LR
-  A[点击按钮 / Ctrl+Tab] --> C[createTerminal<br/>name=terminalName<br/>location=ViewColumn.Active]
+  A[Click button / Ctrl+Tab] --> C[createTerminal<br/>name=terminalName<br/>location=ViewColumn.Active]
   C --> D[terminal.show]
-  D --> E[逐行 sendText<br/>buildLaunchLines]
-  E --> F[OpenCode TUI 在编辑器区域运行]
+  D --> E[sendText line by line<br/>buildLaunchLines]
+  E --> F[OpenCode TUI runs in the editor area]
 ```
 
-> Microsoft vs code 的插件说明页目前不会正确的渲染mermaid图，如果您发现图片看起来没渲染成功，或者是源代码形式的，您可以前往[本项目的GitHub页面](https://github.com/NGC13009/OpenCode-Dock.git)查看该说明的配图。
+> The Microsoft VS Code extension page does not currently render Mermaid diagrams correctly. If you find that the diagram does not render, or appears as source code, you can view the illustrated version of these notes on [this project's GitHub page](https://github.com/NGC13009/OpenCode-Dock.git).
 
-- **编辑器标签页**：`createTerminal` 的 `location` 使用 `ViewColumn.Active`，使终端以标签页出现在编辑器区域；不设置该字段时 VS Code 默认放在底部终端面板。
-- **复用默认终端环境**：不传 `shellPath`/`cwd`，与用户手动点击“+”新建终端行为一致。
-- **标签名可控**：`name` 取自 `opencodeDock.terminalName`（经 `resolveTerminalName` 去空白、为空回退 `OpenCode`）；OpenCode TUI 会通过 OSC 序列改写终端标题，扩展在 `env` 中注入 `OPENCODE_DISABLE_TERMINAL_TITLE=1` 禁用之，保证标签名不被 TUI 覆盖。
-- **命令组装**：`buildLaunchLines`（`src/launchPlan.ts`）是纯函数：`preCommand` 按行拆分、清理首尾空白、忽略空行，最后追加启动命令。与 VS Code API 解耦，因此可在无 GUI 环境下单元测试。
-- **每次新建**：每次触发都新建终端、不复用旧终端，行为可预期。
+- **Editor tab**: `createTerminal` uses `ViewColumn.Active` for `location`, so the terminal appears as a tab in the editor area; if that field is not set, VS Code places it in the bottom terminal panel by default.
+- **Reusing the default terminal environment**: `shellPath`/`cwd` are not passed, so the behavior matches the user manually clicking "+" to create a new terminal.
+- **Controllable tab name**: `name` comes from `opencodeDock.terminalName` (via `resolveTerminalName`, which trims whitespace and falls back to `OpenCode` when empty). The OpenCode TUI rewrites the terminal title through OSC sequences, so the extension injects `OPENCODE_DISABLE_TERMINAL_TITLE=1` into `env` to disable that and keep the tab name from being overwritten by the TUI.
+- **Command assembly**: `buildLaunchLines` (`src/launchPlan.ts`) is a pure function: it splits `preCommand` by line, trims leading and trailing whitespace, ignores blank lines, and finally appends the launch command. It is decoupled from the VS Code API, so it can be unit tested without a GUI environment.
+- **Always a new terminal**: Every trigger creates a new terminal and does not reuse old ones, so the behavior is predictable.
 
-总得来说，这个插件实际上源代码非常的简洁……因为本来就没啥要做的。
+All in all, the source code of this extension is really quite simple... because there was not much to do in the first place.
 
-技术栈：TypeScript + VS Code Extension API；测试用 Node 内置 test runner。
+Tech stack: TypeScript + VS Code Extension API; tests use the Node built-in test runner.
 
-目录结构：核心的内容仅为如下内容
+Directory structure: the core content is just the following.
 
 ```text
 ./
 ├── src/
-│   ├── extension.ts       # 激活：注册命令、状态栏按钮、终端
-│   └── launchPlan.ts      # 启动命令组装 + 终端标题回退（纯函数）
-├── test/                  # 单元测试（launchPlan）
+│   ├── extension.ts       # Activation: registers the command, status bar button, terminal
+│   └── launchPlan.ts      # Launch command assembly + terminal title fallback (pure functions)
+├── test/                  # Unit tests (launchPlan)
 ├── scripts/
-│   └── package.mjs        # vsce 打包（current / all / 指定 target）
-├── out/                   # tsc 编译输出（构建生成）
-└── release/               # 打包产物 vsix（构建生成）
+│   └── package.mjs        # vsce packaging (current / all / specified target)
+├── out/                   # tsc compile output (build artifact)
+└── release/               # Packaged VSIX output (build artifact)
 ```
 
-如需贡献：
+If you would like to contribute:
 
-- 保持 `launchPlan.ts` 中的函数为无副作用的纯函数；
-- 新增逻辑应补充对应单元测试。
+- Keep the functions in `launchPlan.ts` side-effect-free pure functions;
+- New logic should come with corresponding unit tests.
 
-## 许可证与作者信息
+## License & Author
 
 [GPLv3](LICENSE.txt)
 

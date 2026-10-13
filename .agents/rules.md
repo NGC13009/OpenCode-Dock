@@ -4,7 +4,37 @@
 
 每次添加功能或者修改功能后，一定记得更改项目版本号。三位版本号，除非整个重构，或者更新大发布版本，否则第一位永远不动。功能更新第二位增加，如果仅修复bug等第三位增加。
 
-本项目不使用自动目录，只能使用手工目录。每次修改完成后，如果readme更新，那么记得更新readme的目录。
+**版本号永远以 `package.json` 的 `version` 字段为唯一来源。** README（`README.md` / `README_CN.md`）只能向 `package.json` 对齐，不得出现任何其他版本号；两者冲突时以 `package.json` 为准，直接改文档。
+
+README 为双语：`README.md`（英文，仓库首页/市场默认读取）与 `README_CN.md`（中文）。任何内容改动**两份都要同步**，顶部保留语言切换行 `[English](README.md) | [简体中文](README_CN.md)`。
+
+本项目不使用自动目录，只能使用手工目录。每次修改完成后，如果 readme 更新，那么记得同步更新两份 readme 的手工目录（标题文字或层级变了就要改锚点）。
+
+## 写作规范（术语与写法统一）
+
+README 及一切文档统一按下表书写（左列为唯一标准写法）：
+
+| 标准写法 | 禁止/错误写法 |
+| --- | --- |
+| VS Code | VSCode、vscode、vsc、vs code、VSCODE |
+| VS Code 扩展 / 扩展 | 插件（官方中文用语是「扩展」，全文档统一） |
+| VSIX 文件 | vsix 文件、.vsix（仅路径/后缀处保留 `.vsix`） |
+| OpenCode、OpenCode CLI、OpenCode TUI | opencode（仅命令与包名处保留小写） |
+| GitHub、GitHub Release | github、Github、release 文件（指 GitHub Releases 时首字母大写） |
+| Copilot（GitHub Copilot） | copilot |
+| Conda | conda |
+| Python | python |
+| Node、Node.js | node（指运行时名称时；`node` 命令本身保留小写） |
+| PowerShell | powershell |
+| Mermaid | mermaid（仅代码块语言标记保留小写） |
+| npm、git、bash、tsc、vsce、codicon | 分别的大写变体（这些工具官方即为小写） |
+
+排版规则：
+
+- 中英文之间加一个半角空格（如「在 VS Code 中」「启动 OpenCode TUI」）；数字与中文之间同样加空格，除非紧邻单位符号或标点。
+- 中文句子用全角标点；英文单词、路径、命令用半角。括号开闭必须成对且同类（不要「（……)」混用）。
+- 半角标点后跟中文时不额外加空格（如「VS Code：」是全角冒号，前面不留空格）。
+- 行文中出现易混淆搭配时保留连字符/空格，如 `VS Code Extension API`、`Node 内置的 test runner`。
 
 ## 关键结论（已验证官方文档/源码）
 
