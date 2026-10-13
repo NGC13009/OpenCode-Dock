@@ -2,9 +2,10 @@
   "name": "opencode-dock",
   "displayName": "OpenCode Dock",
   "description": "一键启动 OpenCode TUI：在编辑器区域以标签页打开，支持启动前自定义命令与快捷键触发。",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "publisher": "ngc13009",
   "license": "GPL-3.0-only",
+  "icon": "ico.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/NGC13009/OpenCode-Dock.git"
