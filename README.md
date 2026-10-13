@@ -10,8 +10,6 @@ It also automatically names that terminal `OpenCode` (the title text is customiz
 
 The extension also ships a default `Ctrl+Tab` keybinding for instant launching, which behaves the same as pressing the button.
 
-v0.3.0 · VS Code ^1.106.0 · TypeScript
-
 ## Contents
 
 - [Features](#features)
