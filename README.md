@@ -46,11 +46,11 @@ v0.3.0 · VS Code ^1.106.0 · TypeScript
 
 ### Install from the VS Code Marketplace
 
-To be added
+Visit [NGC13009.OpenCodeDock - VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=NGC13009.opencode-dock) to view it.
 
-### Download a Release from GitHub
+### Download the Release File from GitHub
 
-To be added
+Visit the [OpenCodeDock - GitHub release](https://github.com/NGC13009/OpenCode-Dock/releases) page to get it.
 
 ### Install from source
 

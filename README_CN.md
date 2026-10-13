@@ -46,11 +46,11 @@ v0.3.0 · VS Code ^1.106.0 · TypeScript
 
 ### 从 VS Code 扩展市场安装
 
-等待补充
+访问 [NGC13009.OpenCodeDock - VS Code 插件市场](https://marketplace.visualstudio.com/items?itemName=NGC13009.opencode-dock)查看。
 
 ### 从 GitHub 下载 Release 文件
 
-等待补充
+访问[OpenCodeDock - GitHub release](https://github.com/NGC13009/OpenCode-Dock/releases) 页面获取。
 
 ### 从源码安装
 
