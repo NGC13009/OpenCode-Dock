@@ -1,4 +1,5 @@
 {
+  "pricing": "Free",
   "name": "opencode-dock",
   "displayName": "%extension.displayName%",
   "description": "%extension.description%",
